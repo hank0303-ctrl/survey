@@ -12,7 +12,7 @@
 // 6. 將該 URL 貼入 index.html 第 266 行的 GAS_URL 變數
 // ============================================================
 
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // ← 換成你的試算表 ID
+const SPREADSHEET_ID = '13srBPtk_NxKWGnIFbvEfpSEadRWU4ceWR-5EUGWlQow'; // ← 換成你的試算表 ID
 const SHEET_NAME = '動向調查回覆';                  // 可自行修改分頁名稱
 
 const HEADERS = [
