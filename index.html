@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新學期課後班動向調查表｜武樂運動空間</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: #FFF8F2;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #D96B2A 0%, #F0A030 100%);
+      color: white;
+      padding: 36px 20px 32px;
+      text-align: center;
+    }
+    .header-logo { font-size: 2.2em; margin-bottom: 8px; }
+    .header h1 { font-size: 1.45em; font-weight: 800; letter-spacing: 0.02em; margin-bottom: 6px; }
+    .header p { font-size: 0.88em; opacity: 0.88; }
+
+    .container {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 20px 14px 64px;
+    }
+
+    /* Intro card */
+    .intro-card {
+      background: white;
+      border-radius: 16px;
+      padding: 26px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+      border-left: 4px solid #D96B2A;
+    }
+    .intro-card p { line-height: 1.85; color: #555; margin-bottom: 14px; font-size: 0.95em; }
+    .intro-card p:last-child { margin-bottom: 0; }
+
+    .schedule-box {
+      background: #FFF5EB;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+    .schedule-box .label {
+      font-size: 0.85em;
+      font-weight: 600;
+      color: #D96B2A;
+      margin-bottom: 10px;
+      letter-spacing: 0.03em;
+    }
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      padding: 5px 0;
+      font-size: 0.92em;
+      color: #555;
+      gap: 10px;
+    }
+    .schedule-dot {
+      width: 8px; height: 8px;
+      background: #D96B2A;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Question cards */
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px 22px 24px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+    }
+
+    .q-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .q-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; min-width: 28px;
+      background: #D96B2A; color: white;
+      border-radius: 50%; font-size: 0.82em; font-weight: 700;
+    }
+    .q-title { font-size: 1em; font-weight: 600; color: #2A2A2A; line-height: 1.55; padding-top: 4px; }
+    .required { color: #D96B2A; font-size: 0.85em; margin-left: 3px; }
+
+    input[type="text"],
+    textarea {
+      width: 100%; padding: 12px 14px;
+      border: 2px solid #EEE; border-radius: 10px;
+      font-size: 0.95em; font-family: inherit;
+      color: #333; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #D96B2A;
+      box-shadow: 0 0 0 3px rgba(217,107,42,0.1);
+    }
+    textarea { resize: vertical; min-height: 100px; }
+
+    .options { display: flex; flex-direction: column; gap: 9px; }
+
+    .opt {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      border: 2px solid #EEEEEE;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      user-select: none;
+    }
+    .opt:hover { border-color: #F0A030; background: #FFFBF5; }
+    .opt:has(input:checked) { border-color: #D96B2A; background: #FFF4EC; }
+
+    .opt input[type="radio"],
+    .opt input[type="checkbox"] {
+      width: 17px; height: 17px;
+      accent-color: #D96B2A; flex-shrink: 0; cursor: pointer;
+    }
+    .opt span { font-size: 0.95em; color: #444; line-height: 1.4; flex: 1; }
+
+    /* Submit */
+    .submit-wrap { margin-top: 6px; }
+    .submit-btn {
+      width: 100%; padding: 17px;
+      background: linear-gradient(135deg, #D96B2A, #F0A030);
+      color: white; border: none; border-radius: 14px;
+      font-size: 1.05em; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.04em;
+    }
+    .submit-btn:hover { opacity: 0.93; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    .loading {
+      display: inline-block; width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,0.35);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .footer-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-top: 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+      text-align: center;
+      border-top: 4px solid #F0A030;
+    }
+    .footer-card p { line-height: 1.95; color: #666; font-size: 0.93em; }
+    .footer-card strong { color: #D96B2A; }
+
+    /* Success overlay */
+    #successOverlay {
+      display: none; position: fixed;
+      inset: 0; background: rgba(255,251,245,0.97);
+      z-index: 200; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px; text-align: center;
+    }
+    #successOverlay.show { display: flex; }
+    .success-icon { font-size: 72px; margin-bottom: 20px; }
+    .success-title { font-size: 1.7em; font-weight: 800; color: #D96B2A; margin-bottom: 16px; }
+    .success-text { color: #666; line-height: 1.85; max-width: 340px; font-size: 0.97em; }
+
+    /* Error message */
+    .error-msg {
+      display: none; background: #FFF0F0; border: 1px solid #FFC0C0;
+      border-radius: 10px; padding: 14px 16px;
+      color: #C0392B; font-size: 0.9em; margin-top: 12px;
+      text-align: center;
+    }
+    .error-msg.show { display: block; }
+
+    @media (max-width: 480px) {
+      .header h1 { font-size: 1.2em; }
+      .question-card { padding: 18px 16px 20px; }
+      .intro-card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Success overlay -->
+<div id="successOverlay">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">感謝您的填寫！</div>
+  <p class="success-text">
+    我們已收到您的回覆 💛<br><br>
+    武樂將依據大家的需求，提前規劃新學期最合適的安排，期待繼續與您和孩子一起成長！
+  </p>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">🥋</div>
+  <h1>武樂運動空間</h1>
+  <p>新學期課後班動向調查表</p>
+</div>
+
+<div class="container">
+
+  <!-- Intro -->
+  <div class="intro-card">
+    <p>親愛的家長您好～😊</p>
+    <p>感謝您一直以來對武樂的支持與信任。為了提前安排新學期課後班的接送、課程規劃與整體教學安排，想先了解孩子下學期的上課規劃與動向，方便我們提前做最合適的安排與協助。</p>
+    <div class="schedule-box">
+      <div class="label">目前武樂固定運動課程如下</div>
+      <div class="schedule-row"><span class="schedule-dot"></span><span>週一｜體能課</span></div>
+      <div class="schedule-row"><span class="schedule-dot"></span><span>週二｜武術課</span></div>
+      <div class="schedule-row"><span class="schedule-dot"></span><span>週三｜拳擊課</span></div>
+      <div class="schedule-row"><span class="schedule-dot"></span><span>週四｜體能課</span></div>
+      <div class="schedule-row"><span class="schedule-dot"></span><span>週五｜武術課</span></div>
+    </div>
+    <p>想請家長協助填寫此份表單，讓我們了解孩子新學期是否會持續留在武樂、是否另有補習班安排，或是否有固定某些時段來武樂上課的需求，我們也會依實際情況評估是否有其他可配合的方式。</p>
+  </div>
+
+  <form id="surveyForm">
+
+    <!-- Q1 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">1</span>
+        <span class="q-title">小朋友姓名<span class="required">*</span></span>
+      </div>
+      <input type="text" name="q1_name" placeholder="請輸入小朋友姓名" required>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">2</span>
+        <span class="q-title">就讀學校／年級<span class="required">*</span></span>
+      </div>
+      <input type="text" name="q2_school" placeholder="例：青埔國小 二年級" required>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">3</span>
+        <span class="q-title">新學期是否預計持續參與武樂課後班？<span class="required">*</span></span>
+      </div>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="q3_continue" value="是，會繼續留在武樂課後班" required>
+          <span>是，會繼續留在武樂課後班</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q3_continue" value="否，會轉往其他補習班／安親班">
+          <span>否，會轉往其他補習班／安親班</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q3_continue" value="尚未確定，還在安排中">
+          <span>尚未確定，還在安排中</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">4</span>
+        <span class="q-title">若新學期不會每天留在武樂，孩子預計的安排為何？（可複選）</span>
+      </div>
+      <div class="options">
+        <label class="opt">
+          <input type="checkbox" name="q4_plan" value="會去其他補習班／安親班">
+          <span>會去其他補習班／安親班</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4_plan" value="固定某幾天來武樂上課">
+          <span>固定某幾天來武樂上課</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4_plan" value="只參加武樂單堂運動課程">
+          <span>只參加武樂單堂運動課程</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4_plan" value="依家長工作時間彈性安排">
+          <span>依家長工作時間彈性安排</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q4_plan" value="其他">
+          <span>其他</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">5</span>
+        <span class="q-title">若會固定某些時間來武樂，預計可配合的上課日為？（可複選）</span>
+      </div>
+      <div class="options">
+        <label class="opt">
+          <input type="checkbox" name="q5_days" value="週一 體能課">
+          <span>週一｜體能課</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q5_days" value="週二 武術課">
+          <span>週二｜武術課</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q5_days" value="週三 拳擊課">
+          <span>週三｜拳擊課</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q5_days" value="週四 體能課">
+          <span>週四｜體能課</span>
+        </label>
+        <label class="opt">
+          <input type="checkbox" name="q5_days" value="週五 武術課">
+          <span>週五｜武術課</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">6</span>
+        <span class="q-title">孩子新學期預計會以哪一種方式參與武樂？<span class="required">*</span></span>
+      </div>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="q6_mode" value="平日課後班固定到班" required>
+          <span>平日課後班固定到班</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q6_mode" value="固定單幾天到武樂上課">
+          <span>固定單幾天到武樂上課</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q6_mode" value="只參加單堂／堂數課程">
+          <span>只參加單堂／堂數課程</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q6_mode" value="仍在規劃中，需再討論">
+          <span>仍在規劃中，需再討論</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q6_mode" value="其他">
+          <span>其他</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">7</span>
+        <span class="q-title">是否有其他補習班／才藝班的固定時段需要我們一起配合安排？</span>
+      </div>
+      <input type="text" name="q7_other_classes" placeholder="例：週二下午3點有鋼琴課，或填「無」">
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">8</span>
+        <span class="q-title">是否需要武樂協助接送或銜接安排？<span class="required">*</span></span>
+      </div>
+      <div class="options">
+        <label class="opt">
+          <input type="radio" name="q8_transport" value="需要" required>
+          <span>需要</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q8_transport" value="暫時不需要">
+          <span>暫時不需要</span>
+        </label>
+        <label class="opt">
+          <input type="radio" name="q8_transport" value="需要再進一步討論">
+          <span>需要再進一步討論</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">9</span>
+        <span class="q-title">若需要配合接送或時段安排，請簡單說明需求</span>
+      </div>
+      <input type="text" name="q9_transport_detail" placeholder="例：需從學校接送到武樂，約下午3:30">
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">10</span>
+        <span class="q-title">家長對新學期安排，是否有其他想法或希望武樂協助配合的地方？</span>
+      </div>
+      <textarea name="q10_other" placeholder="請自由填寫您的想法與需求..."></textarea>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn" id="submitBtn">送出問卷 🎯</button>
+      <div class="error-msg" id="errorMsg">送出失敗，請稍後再試，或直接聯繫武樂！</div>
+    </div>
+
+  </form>
+
+  <!-- Footer -->
+  <div class="footer-card">
+    <p>
+      再次感謝每一位家長一路以來對武樂的支持與信任，<br>
+      願意把孩子交給我們陪伴與照顧。<br><br>
+      武樂一直秉持著 <strong>良好的品格教育</strong> 與 <strong>快樂的運動學習</strong>，<br>
+      希望孩子不只是來上課，<br>
+      更能在這裡培養自信、紀律、身體能力與正向態度。<br><br>
+      未來新學期，我們也會持續努力，<br>
+      提供孩子一個安心、快樂又有成長的運動環境。<br>
+      謝謝家長們一直以來的支持與陪伴 💛
+    </p>
+  </div>
+
+</div>
+
+<script>
+  // ★ 請將下方 URL 換成你部署後的 Google Apps Script 網址 ★
+  const GAS_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+  document.getElementById('surveyForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('submitBtn');
+    const errMsg = document.getElementById('errorMsg');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>送出中...';
+    errMsg.classList.remove('show');
+
+    // 收集表單資料（checkbox 用頓號合併）
+    const raw = new FormData(this);
+    const data = {};
+    for (const [key, val] of raw.entries()) {
+      data[key] = data[key] ? data[key] + '、' + val : val;
+    }
+    data.timestamp = new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      document.getElementById('successOverlay').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '送出問卷 🎯';
+      errMsg.classList.add('show');
+    }
+  });
+</script>
+
+</body>
+</html>
