@@ -262,8 +262,8 @@
       </div>
       <div class="options">
         <label class="opt">
-          <input type="radio" name="q3_continue" value="是，會繼續留在武樂課後班" required>
-          <span>是，會繼續留在武樂課後班</span>
+          <input type="radio" name="q3_continue" value="是，會按照目前方式持續留在武樂" required>
+          <span>是，會按照目前方式持續留在武樂</span>
         </label>
         <label class="opt">
           <input type="radio" name="q3_continue" value="否，會轉往其他補習班／安親班">
@@ -280,29 +280,38 @@
     <div class="question-card">
       <div class="q-header">
         <span class="q-num">4</span>
-        <span class="q-title">若新學期不會每天留在武樂，孩子預計的安排為何？（可複選）</span>
+        <span class="q-title">若新學期會有其他安排，小朋友預計的安排為何？</span>
       </div>
       <div class="options">
         <label class="opt">
-          <input type="checkbox" name="q4_plan" value="會去其他補習班／安親班">
-          <span>會去其他補習班／安親班</span>
+          <input type="checkbox" name="q4_plan" value="會轉換到其他安親班／補習班">
+          <span>會轉換到其他安親班／補習班</span>
         </label>
         <label class="opt">
-          <input type="checkbox" name="q4_plan" value="固定某幾天放學直接到武樂">
-          <span>固定某幾天放學直接到武樂（請再私訊我們告知）</span>
+          <input type="checkbox" name="q4_plan" value="每週固定某幾天放學直接到武樂課後班">
+          <span>每週固定某幾天放學直接到武樂課後班</span>
         </label>
         <label class="opt">
-          <input type="checkbox" name="q4_plan" value="只參加武術單堂運動課程">
-          <span>只參加武術單堂運動課程</span>
+          <input type="checkbox" name="q4_plan" value="只參加武樂單堂運動課">
+          <span>只參加武樂單堂運動課</span>
         </label>
-        <label class="opt">
-          <input type="checkbox" name="q4_plan" value="依家長工作時間彈性安排">
-          <span>依家長工作時間彈性安排</span>
-        </label>
-        <label class="opt">
-          <input type="checkbox" name="q4_plan" value="其他">
+        <label class="opt" id="q4OtherOpt">
+          <input type="checkbox" name="q4_plan" value="其他" id="q4OtherCheck">
           <span>其他</span>
         </label>
+      </div>
+      <input type="hidden" name="q4_other_reason" id="q4OtherReason">
+    </div>
+
+    <!-- Q4 其他 modal -->
+    <div id="otherModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:center;justify-content:center;padding:24px;">
+      <div style="background:white;border-radius:16px;padding:28px 24px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+        <div style="font-size:1.05em;font-weight:700;color:#2A2A2A;margin-bottom:14px;">請說明其他安排的內容</div>
+        <textarea id="otherReasonInput" rows="4" placeholder="請填寫您的想法或安排..." style="width:100%;padding:12px 14px;border:2px solid #EEE;border-radius:10px;font-size:0.95em;font-family:inherit;outline:none;resize:vertical;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button type="button" onclick="cancelOther()" style="flex:1;padding:13px;border:2px solid #DDD;border-radius:10px;background:white;font-size:0.95em;cursor:pointer;font-family:inherit;color:#666;">取消</button>
+          <button type="button" onclick="confirmOther()" style="flex:2;padding:13px;background:linear-gradient(135deg,#D96B2A,#F0A030);color:white;border:none;border-radius:10px;font-size:0.95em;font-weight:700;cursor:pointer;font-family:inherit;">確認</button>
+        </div>
       </div>
     </div>
 
@@ -427,6 +436,40 @@
 <script>
   // ★ 請將下方 URL 換成你部署後的 Google Apps Script 網址 ★
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbxae0jvMdDCJkYSDyRU9vyPqwhwk--ftRF2U3oSG13Oc26c7mTK1eV1MD0cYrwSUQHH/exec';
+
+  // Q4 其他 modal 邏輯
+  const modal = document.getElementById('otherModal');
+  const check = document.getElementById('q4OtherCheck');
+  const input = document.getElementById('otherReasonInput');
+  const hidden = document.getElementById('q4OtherReason');
+
+  check.addEventListener('change', function () {
+    if (this.checked) {
+      modal.style.display = 'flex';
+      input.value = hidden.value;
+      setTimeout(() => input.focus(), 100);
+    } else {
+      hidden.value = '';
+    }
+  });
+
+  function cancelOther() {
+    modal.style.display = 'none';
+    check.checked = false;
+    hidden.value = '';
+  }
+
+  function confirmOther() {
+    const val = input.value.trim();
+    if (!val) { input.focus(); return; }
+    hidden.value = val;
+    modal.style.display = 'none';
+  }
+
+  // 點 modal 背景關閉
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) cancelOther();
+  });
 
   document.getElementById('surveyForm').addEventListener('submit', async function (e) {
     e.preventDefault();
